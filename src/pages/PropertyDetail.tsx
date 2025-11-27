@@ -1,8 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Property } from '../types';
 import './PropertyDetail.css';
+
+interface Property {
+  id: string;
+  title: string;
+  description?: string;
+  address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  square_feet?: number;
+  lot_size?: number;
+  property_type: string;
+  year_built?: number;
+  images: string[];
+  features: string[];
+  created_at: string;
+}
 
 export default function PropertyDetail() {
   const { id } = useParams();
@@ -57,8 +76,6 @@ export default function PropertyDetail() {
 
     try {
       const { error } = await supabase.from('leads').insert({
-        property_id: id,
-        agent_id: property?.agent_id,
         full_name: formData.full_name,
         email: formData.email,
         phone: formData.phone,
@@ -119,7 +136,7 @@ export default function PropertyDetail() {
         </div>
         {images.length > 1 && (
           <div className="image-thumbnails">
-            {images.map((image, index) => (
+            {images.map((image: string, index: number) => (
               <div
                 key={index}
                 className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
@@ -187,7 +204,7 @@ export default function PropertyDetail() {
               <div className="property-features">
                 <h2>Features & Amenities</h2>
                 <ul className="features-list">
-                  {property.features.map((feature, index) => (
+                  {property.features.map((feature: string, index: number) => (
                     <li key={index}>{feature}</li>
                   ))}
                 </ul>
@@ -196,34 +213,16 @@ export default function PropertyDetail() {
           </div>
 
           <aside className="property-sidebar">
-            {property.agents && (
-              <div className="agent-card">
-                <h3>Contact Agent</h3>
-                <div className="agent-info">
-                  {property.agents.photo_url && (
-                    <img
-                      src={property.agents.photo_url}
-                      alt={property.agents.full_name}
-                      className="agent-photo"
-                    />
-                  )}
-                  <div>
-                    <h4>{property.agents.full_name}</h4>
-                    {property.agents.phone && <p>{property.agents.phone}</p>}
-                    {property.agents.email && <p>{property.agents.email}</p>}
-                  </div>
-                </div>
-                {property.agents.bio && (
-                  <p className="agent-bio">{property.agents.bio}</p>
-                )}
-                <button
-                  className="contact-button"
+            <div className="property-contact">
+              <h3>Interested in this property?</h3>
+              <p>Let us know and we'll get back to you shortly.</p>
+              <button
+                className="contact-button"
                   onClick={() => setShowContactForm(!showContactForm)}
                 >
                   Request Information
                 </button>
-              </div>
-            )}
+            </div>
 
             {showContactForm && (
               <div className="contact-form-card">

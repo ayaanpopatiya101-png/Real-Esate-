@@ -1,8 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Property } from '../types';
 import './Properties.css';
+
+interface Property {
+  id: string;
+  title: string;
+  address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  square_feet?: number;
+  property_type: string;
+  status: string;
+  images: string[];
+  created_at: string;
+}
 
 export default function Properties() {
   const navigate = useNavigate();
